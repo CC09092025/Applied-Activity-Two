@@ -1,0 +1,50 @@
+﻿@page "/"
+
+@using SecondAppliedActivity.Models
+
+<h1 class="title">📝 My To-Do List</h1>
+
+<div class="add-task">
+    <input type="text" placeholder="Enter a new task"
+           @bind="newTaskTitle"
+           @bind:event="oninput"
+           class="task-input" />
+    <button @onclick="AddTask" class="add-btn">Add Task</button>
+</div>
+
+@if (todoItems.Count == 0)
+{
+    <p class="empty">No tasks yet — add one above!</p>
+}
+else
+{
+    <ul class="task-list">
+        @foreach (var item in todoItems)
+        {
+            <li class="task-item">
+                <input type="checkbox" @bind="item.IsDone" />
+                <span class="task-text @(item.IsDone ? "done" : "")">@item.Title</span>
+                <button @onclick="() => RemoveTask(item)" class="remove-btn">❌</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private string newTaskTitle = string.Empty;
+    private List<TodoItem> todoItems = new();
+
+    private void AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTaskTitle))
+        {
+            todoItems.Add(new TodoItem { Title = newTaskTitle });
+            newTaskTitle = string.Empty; // Clear input field
+        }
+    }
+
+    private void RemoveTask(TodoItem item)
+    {
+        todoItems.Remove(item);
+    }
+}
